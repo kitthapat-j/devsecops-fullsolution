@@ -21,9 +21,10 @@ app.get('/', (req, res) => {
 // *** แต่เมื่อรัน Unit Test จะไม่รัน app.listen() ***
 /* istanbul ignore if */ // 👈 เพิ่ม Comment นี้เพื่อยกเว้นบล็อก if ทั้งหมด
 if (require.main === module) {
-  app.listen(port, /* istanbul ignore next */ () => { // 👈 เพิ่มอีกอันหากจำเป็น
+  /* istanbul ignore next */ 
+  app.listen(port, () => { // ยกเว้น app.listen และฟังก์ชัน Callback
     /* istanbul ignore next */ 
-    console.log(`App listening at http://localhost:${port}`);
+    console.log(`App listening at http://localhost:${port}`); // ยกเว้นบรรทัดนี้
   });
 }
 
