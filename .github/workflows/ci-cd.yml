@@ -19,24 +19,22 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'app/package.json' # เพิ่ม path cache
-          
-      - name: Install Global Dependencies (Sonar Scanner)
-        run: npm install -g sonar-scanner # ติดตั้ง Sonar Scanner
-        
-      - name: Install App Dependencies
-        run: npm install --prefix app
 
+      - name: Install Dependencies
+        run: npm install --prefix app
+        
       # 1. รัน SonarQube Scan
       - name: SonarQube Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          sonar-scanner \
+          npm run sonar --prefix app -- \
+            -Dsonar.projectKey=kitthapat-j_devsecops-fullsolution \
+            -Dsonar.organization=kitthapat-j \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }} 
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
-      # 2. Security Gate 1: ตรวจสอบ Quality Gate (จะ FAIL)
+      # 2. Security Gate: ตรวจสอบ Quality Gate (จะ FAIL)
       - name: Check SonarQube Quality Gate
         uses: SonarSource/sonarcloud-quality-gate-action@v2.2.0
