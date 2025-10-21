@@ -94,21 +94,21 @@ jobs:
         uses: azure/cli@v1    
         with:
           inlineScript: |
-          RESOURCE_GROUP="iac-devops-rg-00"
-          APP_SERVICE_PLAN_NAME="${{ secrets.AZURE_WEBAPP_NAME }}-plan"
-          WEB_APP_NAME="${{ secrets.AZURE_WEBAPP_NAME }}
-          LOCATION="eastus"
-          NODE_RUNTIME="NODE:18-lts"
+            RESOURCE_GROUP="iac-devops-rg-00"
+            APP_SERVICE_PLAN_NAME="${{ secrets.AZURE_WEBAPP_NAME }}-plan"
+            WEB_APP_NAME="${{ secrets.AZURE_WEBAPP_NAME }}
+            LOCATION="eastus"
+            NODE_RUNTIME="NODE:18-lts"
 
-          az appservice plan create \
+            az appservice plan create \
               --name $APP_SERVICE_PLAN_NAME \
               --resource-group $RESOURCE_GROUP \
               --location $LOCATION \
               --is-linux \
               --sku F1 --output none
 
-          echo "Checking and creating WebApp: $WEB_APP_NAME"
-          az webapp create \
+            echo "Checking and creating WebApp: $WEB_APP_NAME"
+            az webapp create \
               --name $WEB_APP_NAME \
               --resource-group $RESOURCE_GROUP \
               --plan $APP_SERVICE_PLAN_NAME \
