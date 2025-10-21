@@ -42,4 +42,4 @@ jobs:
 
       # 2. Security Gate: ตรวจสอบ Quality Gate (จะ FAIL)
       - name: Check SonarQube Quality Gate
-        uses: SonarSource/sonarcloud-quality-gate-action@v2.2.0
+        uses: SonarSource/sonarcloud-quality-gate-action@v1.2.0
