@@ -81,7 +81,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
+          
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
       # สร้างไฟล์ ZIP ของแอปพลิเคชันเพื่อ Deploy
       - name: Create Deployment Package
       # บีบอัดเฉพาะโฟลเดอร์ app/ (ซึ่งมี index.js และ node_modules)
@@ -91,7 +95,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           # การ Login โดยใช้ Service Principal JSON (ควรถูกจัดเก็บใน AZURE_CREDENTIALS secret)
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          #creds: ${{ secrets.AZURE_CREDENTIALS }}
           # ชื่อ Azure App Service (ควรถูกจัดเก็บใน AZURE_WEBAPP_NAME secret)
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           # โฟลเดอร์ที่ต้องการ Deploy
