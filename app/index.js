@@ -5,21 +5,18 @@ const app = express();
 const port = 3000;
 
 // ฟังก์ชันสำหรับ Escape HTML (ป้องกัน XSS)
+// แก้ไข: ใช้ String#replaceAll() แทน String#replace() ตามคำแนะนำด้าน Code Quality ของ SonarQube
 const escapeHtml = (unsafe) => {
   if (typeof unsafe !== 'string') {
     return unsafe;
   }
-  return unsafe.replace(/[&<>"'/]/g, (m) => {
-    switch (m) {
-      case '&': return '&amp;';
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '"': return '&quot;';
-      case "'": return '&#39;';
-      case '/': return '&#x2F;';
-      default: return m;
-    }
-  });
+  return unsafe
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+    .replaceAll('/', '&#x2F;');
 };
 
 // 1. [แก้ไขช่องโหว่ SAST/Code Smell] ไม่ควร Hardcode Secret
