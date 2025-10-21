@@ -1,0 +1,42 @@
+name: DevSecOps CI/CD Pipeline to Azure
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_and_scan:
+    name: 🛡️ Scan & Quality Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'app/package.json' # เพิ่ม path cache
+          
+      - name: Install Global Dependencies (Sonar Scanner)
+        run: npm install -g sonar-scanner # ติดตั้ง Sonar Scanner
+        
+      - name: Install App Dependencies
+        run: npm install --prefix app
+
+      # 1. รัน SonarQube Scan
+      - name: SonarQube Scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} 
+
+      # 2. Security Gate 1: ตรวจสอบ Quality Gate (จะ FAIL)
+      - name: Check SonarQube Quality Gate
+        uses: SonarSource/sonarcloud-quality-gate-action@v2.2.0
