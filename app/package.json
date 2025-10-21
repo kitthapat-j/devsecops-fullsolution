@@ -2,11 +2,23 @@
   "name": "devsecops-app",
   "version": "1.0.0",
   "dependencies": {
-    "express": "4.16.4", 
+    "express": "4.16.4",
     "selenium-webdriver": "^4.0.0"
   },
   "scripts": {
-    "start": "node app/index.js",
+    "start": "node index.js",
+    "test": "jest --coverage --forceExit",
     "sonar": "node_modules/sonar-scanner/bin/sonar-scanner"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "coverageDirectory": "./coverage"
   }
 }
