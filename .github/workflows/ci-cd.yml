@@ -6,26 +6,33 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# ตั้งค่าสิทธิ์ที่จำเป็นทั้งหมด
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+  actions: read
+
 jobs:
   build_and_scan:
     name: 🛡️ Scan & Quality Gate
-    permissions:
-      contents: read
-      packages: write
-      pull-requests: write
-      actions: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install Dependencies
+      # ติดตั้ง sonar-scanner globally เพื่อให้คำสั่ง npm run sonar ใช้งานได้
+      - name: Install Global Sonar Scanner
+        run: npm install -g sonar-scanner
+          
+      - name: Install App Dependencies
         run: npm install --prefix app
         
       # 1. รัน SonarQube Scan
@@ -34,27 +41,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          npm run sonar --prefix app -- \
+          # ใช้ sonar-scanner ที่ติดตั้งไว้ global
+          sonar-scanner \
             -Dsonar.projectKey=kitthapat-j_devsecops-fullsolution \
             -Dsonar.organization=kitthapat-j \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-
-      # 2. Security Gate: ตรวจสอบ Quality Gate (ใช้ Action สำรอง)
-      - name: Wait for SonarQube Analysis and Check Quality Gate
-        id: wait_sonar
-        # ใช้ Action ที่ติดต่อกับ Sonar API โดยตรงและมีความเสถียรสูงกว่า
-        uses: jbarratt/wait-on-sonar-action@v1.4.1
+            
+      # 2. Security Gate: ตรวจสอบ Quality Gate (ใช้ First-Party Action + Script)
+      # ใช้ actions/github-script แทน Action ภายนอกทั้งหมดที่เกิดปัญหา
+      - name: Check SonarQube Quality Gate Status
+        id: check_gate
+        uses: actions/github-script@v7
         with:
-          url: ${{ secrets.SONAR_HOST_URL }}
-          token: ${{ secrets.SONAR_TOKEN }}
-          # ใส่ Project Key ที่คุณใช้งานอยู่
-          projectKey: kitthapat-j_devsecops-fullsolution 
-          timeout: 300 # รอผลลัพธ์สูงสุด 5 นาที
-          
-      - name: Fail if SonarQube Quality Gate Fails
-        # ถ้าผลลัพธ์ที่ได้จาก Action ข้างบนไม่เป็น 'OK' (ผ่าน) ให้ Job นี้ Fail
-        if: steps.wait_sonar.outputs.qualityGateStatus != 'OK'
-        run: |
-          echo "::error::SonarQube Quality Gate FAILED. Cannot proceed to testing/deployment."
-          exit 1
+          # เรียกใช้ script ที่เราสร้างเองเพื่อตรวจสอบสถานะ
+          script: |
+            const { checkQualityGate } = require('./.github/workflows/sonar-check-script.js');
+            await checkQualityGate({github, core, fetch});
+
+  
