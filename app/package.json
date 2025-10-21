@@ -1,0 +1,12 @@
+{
+  "name": "devsecops-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "4.16.4", 
+    "selenium-webdriver": "^4.0.0"
+  },
+  "scripts": {
+    "start": "node app/index.js",
+    "sonar": "node_modules/sonar-scanner/bin/sonar-scanner"
+  }
+}
