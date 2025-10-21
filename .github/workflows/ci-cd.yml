@@ -47,12 +47,13 @@ jobs:
             -Dsonar.projectKey=kitthapat-j_devsecops-fullsolution \
             -Dsonar.organization=kitthapat-j \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+            # *** เพิ่มการระบุ Source Code Path ***
+            -Dsonar.sources=app
             
       # 2. Security Gate: ตรวจสอบ Quality Gate (ใช้ First-Party Action + Script)
       - name: Check SonarQube Quality Gate Status
         id: check_gate
-        # *** เพิ่ม env Block ตรงนี้ ***
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
