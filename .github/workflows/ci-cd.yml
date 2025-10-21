@@ -94,10 +94,10 @@ jobs:
         uses: azure/cli@v1    
         with:
           inlineScript: |
-            RESOURCE_GROUP="iac-devops-rg-00"
+            RESOURCE_GROUP="RG000"
             APP_SERVICE_PLAN_NAME="${{ secrets.AZURE_WEBAPP_NAME }}-plan"
             WEB_APP_NAME="${{ secrets.AZURE_WEBAPP_NAME }}"
-            LOCATION="eastus"
+            LOCATION="westus"
             NODE_RUNTIME="NODE|20-lts"
 
             az appservice plan create \
