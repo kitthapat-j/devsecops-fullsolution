@@ -9,6 +9,11 @@ on:
 jobs:
   build_and_scan:
     name: 🛡️ Scan & Quality Gate
+    permissions:
+      contents: read  # ต้องมีสิทธิ์อ่านเพื่อ Checkout โค้ด
+      packages: write
+      pull-requests: write # อาจจำเป็นสำหรับ SonarQube Decoration
+      actions: read  # สำคัญ: ต้องมีสิทธิ์ในการเข้าถึง Action
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
