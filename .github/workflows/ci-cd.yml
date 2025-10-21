@@ -105,7 +105,7 @@ jobs:
               --resource-group $RESOURCE_GROUP \
               --location $LOCATION \
               --is-linux \
-              --sku F1 --output none
+              --sku D1 --output none
 
             echo "Checking and creating WebApp: $WEB_APP_NAME"
             az webapp create \
