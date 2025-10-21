@@ -13,7 +13,7 @@ app.get('/unsafe-api', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello DevSecOps World!');
+  res.send('Hello DevSecOps World!!');
 });
 
 app.listen(port, () => {
