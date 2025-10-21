@@ -10,10 +10,10 @@ jobs:
   build_and_scan:
     name: 🛡️ Scan & Quality Gate
     permissions:
-      contents: read  # ต้องมีสิทธิ์อ่านเพื่อ Checkout โค้ด
+      contents: read
       packages: write
-      pull-requests: write # อาจจำเป็นสำหรับ SonarQube Decoration
-      actions: read  # สำคัญ: ต้องมีสิทธิ์ในการเข้าถึง Action
+      pull-requests: write
+      actions: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +40,21 @@ jobs:
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
-      # 2. Security Gate: ตรวจสอบ Quality Gate (จะ FAIL)
-      - name: Check SonarQube Quality Gate
-        uses: SonarSource/sonarcloud-quality-gate-action@v1.2.0
+      # 2. Security Gate: ตรวจสอบ Quality Gate (ใช้ Action สำรอง)
+      - name: Wait for SonarQube Analysis and Check Quality Gate
+        id: wait_sonar
+        # ใช้ Action ที่ติดต่อกับ Sonar API โดยตรงและมีความเสถียรสูงกว่า
+        uses: jbarratt/wait-on-sonar-action@v1.4.1
+        with:
+          url: ${{ secrets.SONAR_HOST_URL }}
+          token: ${{ secrets.SONAR_TOKEN }}
+          # ใส่ Project Key ที่คุณใช้งานอยู่
+          projectKey: kitthapat-j_devsecops-fullsolution 
+          timeout: 300 # รอผลลัพธ์สูงสุด 5 นาที
+          
+      - name: Fail if SonarQube Quality Gate Fails
+        # ถ้าผลลัพธ์ที่ได้จาก Action ข้างบนไม่เป็น 'OK' (ผ่าน) ให้ Job นี้ Fail
+        if: steps.wait_sonar.outputs.qualityGateStatus != 'OK'
+        run: |
+          echo "::error::SonarQube Quality Gate FAILED. Cannot proceed to testing/deployment."
+          exit 1
