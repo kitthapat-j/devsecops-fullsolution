@@ -38,7 +38,8 @@ jobs:
 
       # คำสั่งนี้จะใช้ 'jest --coverage' จาก package.json เพื่อสร้าง app/coverage/lcov.info
       - name: Run Unit Tests and Generate Coverage Report (LCOV)
-        run: npm run test --prefix app  -- ../tests/index.test.js
+        run: npx jest --coverage --config app/package.json --forceExit
+
         
       # 1. รัน SonarQube Scan
       - name: SonarQube Scan
