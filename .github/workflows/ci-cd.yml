@@ -96,7 +96,7 @@ jobs:
           inlineScript: |
             RESOURCE_GROUP="iac-devops-rg-00"
             APP_SERVICE_PLAN_NAME="${{ secrets.AZURE_WEBAPP_NAME }}-plan"
-            WEB_APP_NAME="${{ secrets.AZURE_WEBAPP_NAME }}
+            WEB_APP_NAME="${{ secrets.AZURE_WEBAPP_NAME }}"
             LOCATION="eastus"
             NODE_RUNTIME="NODE:18-lts"
 
