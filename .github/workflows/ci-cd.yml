@@ -26,7 +26,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
+          cache: 'npm'
+          cache-dependency-path: 'app/package.json' 
 
       # ติดตั้ง sonar-scanner globally เพื่อให้คำสั่ง npm run sonar ใช้งานได้
       - name: Install Global Sonar Scanner
@@ -49,14 +50,15 @@ jobs:
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
             
       # 2. Security Gate: ตรวจสอบ Quality Gate (ใช้ First-Party Action + Script)
-      # ใช้ actions/github-script แทน Action ภายนอกทั้งหมดที่เกิดปัญหา
       - name: Check SonarQube Quality Gate Status
         id: check_gate
+        # *** เพิ่ม env Block ตรงนี้ ***
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         uses: actions/github-script@v7
         with:
-          # เรียกใช้ script ที่เราสร้างเองเพื่อตรวจสอบสถานะ
           script: |
             const { checkQualityGate } = require('./.github/workflows/sonar-check-script.js');
             await checkQualityGate({github, core, fetch});
 
-  
