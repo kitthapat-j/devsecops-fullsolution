@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: 'app/package.json' 
 
@@ -80,7 +80,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           
       - name: Azure Login
         uses: azure/login@v1
@@ -97,15 +97,15 @@ jobs:
             RESOURCE_GROUP="iac-devops-rg-00"
             APP_SERVICE_PLAN_NAME="${{ secrets.AZURE_WEBAPP_NAME }}-plan"
             WEB_APP_NAME="${{ secrets.AZURE_WEBAPP_NAME }}"
-            LOCATION="westus2"
-            NODE_RUNTIME="NODE:18-lts"
+            LOCATION="eastus"
+            NODE_RUNTIME="NODE|20-lts"
 
             az appservice plan create \
               --name $APP_SERVICE_PLAN_NAME \
               --resource-group $RESOURCE_GROUP \
               --location $LOCATION \
               --is-linux \
-              --sku B1 --output none
+              --sku S1 --output none
 
             echo "Checking and creating WebApp: $WEB_APP_NAME"
             az webapp create \
