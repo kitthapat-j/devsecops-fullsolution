@@ -90,7 +90,7 @@ jobs:
           #tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           #subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           #service-principal-password: ${{ secrets.AZURE_CLIENT_SECRET }} 
-          #
+          
          
       # สร้างไฟล์ ZIP ของแอปพลิเคชันเพื่อ Deploy
       - name: Create Deployment Package
