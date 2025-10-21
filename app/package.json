@@ -19,11 +19,6 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
-    "coverageDirectory": "./coverage",
-    "testMatch": [
-      "**/__tests__/**/*.[jt]s?(x)", 
-      "**/?(*.)+(spec|test).[tj]s?(x)",
-      "../tests/**/*.[jt]s?(x)" 
-    ]
+    "coverageDirectory": "./coverage"
   }
 }
