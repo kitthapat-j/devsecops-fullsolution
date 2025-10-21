@@ -1,7 +1,7 @@
 const request = require('supertest');
 // Note: ต้องมั่นใจว่า index.js ถูก export app instance
 // เพื่อให้ Supertest สามารถ test ได้
-const app = require('./index'); // แก้ไข: อ้างอิงถึงไฟล์ index.js
+const app = require('../app/index'); // แก้ไข: อ้างอิงถึงไฟล์ index.js
 
 describe('API Endpoints', () => {
     // Test Case 1: Testing the root path (/)
