@@ -90,34 +90,11 @@ jobs:
           #tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           #subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           #service-principal-password: ${{ secrets.AZURE_CLIENT_SECRET }} testttt
-      - name: Create Azure Resources (App Service Plan and WebApp)
-        uses: azure/cli@v1    
-        with:
-          inlineScript: |
-            RESOURCE_GROUP="RG000"
-            APP_SERVICE_PLAN_NAME="${{ secrets.AZURE_WEBAPP_NAME }}-plan"
-            WEB_APP_NAME="${{ secrets.AZURE_WEBAPP_NAME }}"
-            LOCATION="westus"
-            NODE_RUNTIME="NODE|20-lts"
-
-            az appservice plan create \
-              --name $APP_SERVICE_PLAN_NAME \
-              --resource-group $RESOURCE_GROUP \
-              --location $LOCATION \
-              --is-linux \
-              --sku S1 --output none
-
-            echo "Checking and creating WebApp: $WEB_APP_NAME"
-            az webapp create \
-              --name $WEB_APP_NAME \
-              --resource-group $RESOURCE_GROUP \
-              --plan $APP_SERVICE_PLAN_NAME \
-              --runtime $NODE_RUNTIME \
-              --output none
+      
          
       # สร้างไฟล์ ZIP ของแอปพลิเคชันเพื่อ Deploy
       - name: Create Deployment Package
-      # บีบอัดเฉพาะโฟลเดอร์ app/ (ซึ่งมี index.js และ node_modules)
+      # บีบอัดเฉพาะโฟลเดอร์ app/ (ซึ่งมี index.js และ node_modules) rrr
         run: zip -r deploy_package.zip app/
 
       - name: 'Deploy to Azure WebApp'
